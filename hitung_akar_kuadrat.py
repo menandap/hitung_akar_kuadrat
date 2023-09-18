@@ -97,7 +97,7 @@ def hitung_akar_kuadrat_api():
         (angka, akar_tebakan, waktu_penghitungan, jenis))
         db.commit()
 
-        return jsonify({'hasil': akar_tebakan, 'waktu_penghitungan': waktu_penghitungan}), 200
+        return jsonify({'input_angka': angka, 'hasil': akar_tebakan, 'waktu_penghitungan': waktu_penghitungan}), 200
     
     except Exception as e:
         if cursor:
@@ -129,13 +129,14 @@ def hitung_akar_kuadrat_plsql():
         db.commit()
 
         # memanggil hasil dari db
-        cursor.execute("SELECT hasil, waktu FROM logs WHERE input = %s", (angka,))
+        cursor.execute("SELECT input, hasil, waktu FROM logs WHERE input = %s", (angka,))
         data = cursor.fetchall()
         cursor.close()
 
         # convert data
-        logs = [{'hasil': row[0], 'waktu-penghitungan': row[1]} for row in data]
+        logs = [{'input': row[0],'hasil': row[1], 'waktu-penghitungan': row[2]} for row in data]
         formatted_data = {
+        "input_angka": logs[0]['input'],  
         "hasil": logs[0]['hasil'],  
         "waktu_penghitungan": logs[0]['waktu-penghitungan'] 
         }
