@@ -127,25 +127,30 @@ def hitung_akar_kuadrat_plsql():
         cursor.callproc('square_root', (angka, 0, 0))  # Memanggil stored procedure dengan parameter input, output output, dan output timeoutput
         db.commit()
 
-        # Fetch the output variables
-        cursor.execute("SELECT @output, @timeoutput")
-        result = cursor.fetchall()
-        akar_kuadrat = result[0][0]
-        waktu_penghitungan = result[0][1]
-
+        # memanggil hasil dari db
+        cursor.execute("SELECT hasil, waktu FROM logs WHERE input = %s", (angka,))
+        data = cursor.fetchall()
         cursor.close()
 
-        # Construct the JSON response
-        response_data = {
-            'angka': angka,
-            'hasil': akar_kuadrat,
-            'waktu_penghitungan': waktu_penghitungan
+        # return json
+        # return jsonify({'hasil': row[0], 'waktu-penghitungan': row[1]} for row in data), 200
+
+        # convert data
+        logs = [{'hasil': row[0], 'waktu-penghitungan': row[1]} for row in data]
+        formatted_data = {
+        "hasil": logs[0]['hasil'],  # Replace with the correct key you want
+        "waktu_penghitungan": logs[0]['waktu-penghitungan']  # Replace with the correct key you want
         }
+        
+        # passing data json
+        # return jsonify({'logs': logs}), 200
+    
 
-        return jsonify(response_data), 200
-
+        return jsonify(formatted_data)
+    
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
 
 
 if __name__ == '__main__':
