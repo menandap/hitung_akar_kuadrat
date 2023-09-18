@@ -33,12 +33,6 @@ CREATE TABLE `logs` (
 
 /*Data for the table `logs` */
 
-insert  into `logs`(`id`,`input`,`hasil`,`waktu`,`jenis`,`created_at`,`updated_at`) values 
-(28,10,3.162277660168379,0,'API',NULL,NULL),
-(29,11,3.3166247903554,0.000045,'PL-SQL','2023-09-18 04:54:06','2023-09-18 04:54:06'),
-(30,20,4.472135954999956,0.00005,'PL-SQL','2023-09-18 04:59:40','2023-09-18 04:59:40'),
-(31,21,4.58257569495675,0.000039,'PL-SQL','2023-09-18 05:01:16','2023-09-18 05:01:16');
-
 /* Procedure structure for procedure `square_root` */
 
 /*!50003 DROP PROCEDURE IF EXISTS  `square_root` */;
