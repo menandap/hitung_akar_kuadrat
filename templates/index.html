@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Akar Kuadrat</title>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Kalkulator Akar Kuadrat</h1>
+        <div class="input-container">
+            <label for="inputNumber">Masukkan angka:</label>
+            <input type="number" id="inputNumber" placeholder="Masukkan angka">
+            <button onclick="hitungAkarAPI()">Hitung dengan API</button>
+            <button onclick="hitungAkarPLSQL()">Hitung dengan SP SQL</button>
+        </div>
+        <div class="result-container">
+            <p>Hasil:</p>
+            <h2 id="result">-</h2>
+        </div>
+        <div class="log-container">
+            <h3>Log Perhitungan</h3>
+            <ul id="log">
+                {% for log in logs %}
+                    <li>[{{ log.jenis }}] Akar kuadrat {{ log.input }} adalah {{ '%.2f'|format(log.hasil) }} (Waktu: {{ log.waktu }} ms)</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <script src="static/script.js"></script>
+</body>
+</html>
