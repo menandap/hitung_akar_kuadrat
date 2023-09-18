@@ -92,8 +92,8 @@ def hitung_akar_kuadrat_api():
         timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         # Insert data ke tabel
-        cursor.execute("INSERT INTO logs (input, hasil, waktu, jenis) VALUES (%s, %s, %s, %s)",
-                       (angka, akar_tebakan, waktu_penghitungan, jenis))
+        cursor.execute("INSERT INTO logs (input, hasil, waktu, jenis, created_at, updated_at) VALUES (%s, %s, %s, %s, NOW(), NOW())",
+        (angka, akar_tebakan, waktu_penghitungan, jenis))
         db.commit()
 
         return jsonify({'hasil': akar_tebakan, 'waktu_penghitungan': waktu_penghitungan}), 200
@@ -132,19 +132,12 @@ def hitung_akar_kuadrat_plsql():
         data = cursor.fetchall()
         cursor.close()
 
-        # return json
-        # return jsonify({'hasil': row[0], 'waktu-penghitungan': row[1]} for row in data), 200
-
         # convert data
         logs = [{'hasil': row[0], 'waktu-penghitungan': row[1]} for row in data]
         formatted_data = {
         "hasil": logs[0]['hasil'],  # Replace with the correct key you want
         "waktu_penghitungan": logs[0]['waktu-penghitungan']  # Replace with the correct key you want
         }
-        
-        # passing data json
-        # return jsonify({'logs': logs}), 200
-    
 
         return jsonify(formatted_data)
     
