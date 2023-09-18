@@ -24,14 +24,15 @@ def index():
         data = cursor.fetchall()
         cursor.close()
 
-        # convert data
-        logs = [{'input': row[0], 'hasil': row[1], 'waktu': row[2], 'jenis': row[3]} if all(row) else None for row in data]
+        # Convert data
+        logs = [{'input': row[0], 'hasil': row[1], 'waktu': row[2], 'jenis': row[3]} for row in data]
 
-        # passing data ke template
+        # Passing data to the template
         return render_template('index.html', logs=logs)
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
     
 @app.route('/api/ambil-akar-kuadrat', methods=['GET'])
 def ambil_akar_kuadrat():
