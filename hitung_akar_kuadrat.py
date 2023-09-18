@@ -135,8 +135,8 @@ def hitung_akar_kuadrat_plsql():
         # convert data
         logs = [{'hasil': row[0], 'waktu-penghitungan': row[1]} for row in data]
         formatted_data = {
-        "hasil": logs[0]['hasil'],  # Replace with the correct key you want
-        "waktu_penghitungan": logs[0]['waktu-penghitungan']  # Replace with the correct key you want
+        "hasil": logs[0]['hasil'],  
+        "waktu_penghitungan": logs[0]['waktu-penghitungan'] 
         }
 
         return jsonify(formatted_data)
