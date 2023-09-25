@@ -26,12 +26,14 @@ function hitungAkarAPI() {
         } else {
             // Menampilkan hasil di halaman
             document.getElementById("result").textContent = data.hasil.toFixed(2);
-
+    
             // Menampilkan waktu penghitungan di log
             const logElement = document.getElementById("log");
             const logItem = document.createElement("li");
-            logItem.textContent = `[API] Akar kuadrat dari ${inputNumber} adalah ${data.hasil.toFixed(2)} (Waktu: ${data.waktu_penghitungan.toFixed(2)} ms)`;
-            logElement.appendChild(logItem);
+            logItem.textContent = `[API] Akar kuadrat dari ${inputNumber} adalah ${data.hasil.toFixed(2)} (Waktu: ${data.waktu_penghitungan} ms)`;
+            
+            // Insert the new log item at the top of the list
+            logElement.insertBefore(logItem, logElement.firstChild);
         }
     })
     .catch(error => {
@@ -72,8 +74,10 @@ function hitungAkarPLSQL() {
             // Menampilkan waktu penghitungan di log
             const logElement = document.getElementById("log");
             const logItem = document.createElement("li");
-            logItem.textContent = `[PL-SQL] Hasil dari input ${inputNumber} adalah ${data.hasil.toFixed(2)} (Waktu Penghitungan: ${data.waktu_penghitungan.toFixed(2)} ms)`;
-            logElement.appendChild(logItem);
+            logItem.textContent = `[PL-SQL] Hasil dari input ${inputNumber} adalah ${data.hasil.toFixed(2)} (Waktu Penghitungan: ${data.waktu_penghitungan} ms)`;
+
+            // Insert the new log item at the top of the list
+            logElement.insertBefore(logItem, logElement.firstChild);
         }
     })
     .catch(error => {

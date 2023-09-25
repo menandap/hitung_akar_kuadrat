@@ -1,6 +1,7 @@
 import pymysql
 import dbm
 from flask import Flask, render_template, request, jsonify
+import time
 import datetime
 import hashlib
 
@@ -20,14 +21,14 @@ db = pymysql.connect(
 def index():
     try:
         cursor = db.cursor()
-        cursor.execute("SELECT input, hasil, waktu, jenis FROM logs")
+        cursor.execute("SELECT input, hasil, waktu, jenis FROM logs ORDER BY id DESC") #filter dari data terbaru
         data = cursor.fetchall()
         cursor.close()
 
         # Convert data
         logs = [{'input': row[0], 'hasil': row[1], 'waktu': row[2], 'jenis': row[3]} for row in data]
 
-        # Passing data to the template
+        # Passing data ke template
         return render_template('index.html', logs=logs)
 
     except Exception as e:
@@ -67,13 +68,12 @@ def hitung_akar_kuadrat_api():
         if angka < 0:
             return jsonify({'error': 'Angka harus positif atau nol'}), 400
 
-        # Inisialisasi tebakan awal
+     # Your code to calculate the square root
         tebakan = angka / 2
-
-        epsilon = 1e-6  # Toleransi error yang cukup kecil
+        epsilon = 0.00001
 
         # Catat waktu mulai perhitungan
-        start_time = datetime.datetime.now()
+        start_time = time.perf_counter()  # Waktu dalam detik dengan presisi yang lebih tinggi
 
         while True:
             akar_tebakan = 0.5 * (tebakan + angka / tebakan)
@@ -85,8 +85,11 @@ def hitung_akar_kuadrat_api():
             tebakan = akar_tebakan
 
         # Hitung waktu selesai perhitungan
-        end_time = datetime.datetime.now()
-        waktu_penghitungan = (end_time - start_time).total_seconds() * 1000  # Dalam milidetik
+        end_time = time.perf_counter()  # Waktu dalam detik dengan presisi yang lebih tinggi
+        waktu_penghitungan = (end_time - start_time)  # Dalam detik
+
+        # Format the time result to match PHP
+        waktu_penghitungan = round(waktu_penghitungan, 9)  # Round to 9 decimal places
 
         # Simpan hasil perhitungan ke database MySQL
         cursor = db.cursor()
@@ -105,11 +108,8 @@ def hitung_akar_kuadrat_api():
             cursor.close()
         print(f"Database error: {str(e)}")
         return jsonify({'error': 'Terjadi kesalahan'}), 500
-    finally:
-        if cursor:
-            cursor.close()  # menutup cursor jika kosong
 
-# Menggunakan Stored Procedure (error)
+# Menggunakan Stored Procedure 
 @app.route('/api/hitung-akar-kuadrat-plsql', methods=['POST'])
 def hitung_akar_kuadrat_plsql():
     try:
@@ -128,8 +128,13 @@ def hitung_akar_kuadrat_plsql():
         cursor.callproc('square_root', (angka, 0, 0))  # Memanggil stored procedure dengan parameter input, output output, dan output timeoutput
         db.commit()
 
+        # Mengambil ID terbaru dari tabel 
+        cursor.execute("SELECT LAST_INSERT_ID()")
+        result = cursor.fetchone()
+        newest_id = result[0]
+
         # memanggil hasil dari db
-        cursor.execute("SELECT input, hasil, waktu FROM logs WHERE input = %s", (angka,))
+        cursor.execute("SELECT input, hasil, waktu FROM logs WHERE id = %s", (newest_id,))
         data = cursor.fetchall()
         cursor.close()
 
@@ -142,7 +147,11 @@ def hitung_akar_kuadrat_plsql():
         }
 
         return jsonify(formatted_data)
-    
+
+
+        # Mengembalikan hasil dalam bentuk ID terbaru
+        # return jsonify({'id_terbaru': newest_id}), 200
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
